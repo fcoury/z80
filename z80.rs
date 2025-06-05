@@ -223,6 +223,154 @@ impl<T: Z80_io> Z80<T> {
     pub fn clr_irq(&mut self) {
         self.irq_pending = 0 as i32 as uint8_t;
     }
+    // 8-bit register getters
+    pub fn get_a(&self) -> u8 { unsafe { self.c2rust_unnamed.c2rust_unnamed.a } }
+    pub fn get_f(&self) -> u8 { unsafe { self.c2rust_unnamed.c2rust_unnamed.f } }
+    pub fn get_b(&self) -> u8 { unsafe { self.c2rust_unnamed_0.c2rust_unnamed.b } }
+    pub fn get_c(&self) -> u8 { unsafe { self.c2rust_unnamed_0.c2rust_unnamed.c } }
+    pub fn get_d(&self) -> u8 { unsafe { self.c2rust_unnamed_1.c2rust_unnamed.d } }
+    pub fn get_e(&self) -> u8 { unsafe { self.c2rust_unnamed_1.c2rust_unnamed.e } }
+    pub fn get_h(&self) -> u8 { unsafe { self.c2rust_unnamed_2.c2rust_unnamed.h } }
+    pub fn get_l(&self) -> u8 { unsafe { self.c2rust_unnamed_2.c2rust_unnamed.l } }
+    
+    // 8-bit register setters
+    pub fn set_a(&mut self, value: u8) { self.c2rust_unnamed.c2rust_unnamed.a = value;  }
+    pub fn set_f(&mut self, value: u8) { self.c2rust_unnamed.c2rust_unnamed.f = value;  }
+    pub fn set_b(&mut self, value: u8) { self.c2rust_unnamed_0.c2rust_unnamed.b = value; }
+    pub fn set_c(&mut self, value: u8) { self.c2rust_unnamed_0.c2rust_unnamed.c = value; }
+    pub fn set_d(&mut self, value: u8) { self.c2rust_unnamed_1.c2rust_unnamed.d = value; }
+    pub fn set_e(&mut self, value: u8) { self.c2rust_unnamed_1.c2rust_unnamed.e = value; }
+    pub fn set_h(&mut self, value: u8) { self.c2rust_unnamed_2.c2rust_unnamed.h = value; }
+    pub fn set_l(&mut self, value: u8) { self.c2rust_unnamed_2.c2rust_unnamed.l = value; }
+
+    // 16-bit register getters
+    pub fn get_af(&self) -> u16 { unsafe { self.c2rust_unnamed.af } }
+    pub fn get_bc(&self) -> u16 { unsafe { self.c2rust_unnamed_0.bc } }
+    pub fn get_de(&self) -> u16 { unsafe { self.c2rust_unnamed_1.de } }
+    pub fn get_hl(&self) -> u16 { unsafe { self.c2rust_unnamed_2.hl } }
+    pub fn get_pc(&self) -> u16 { self.pc }
+    pub fn get_sp(&self) -> u16 { self.sp }
+    pub fn get_ix(&self) -> u16 { self.ix }
+    pub fn get_iy(&self) -> u16 { self.iy }
+
+    // 16-bit register setters
+    pub fn set_af(&mut self, value: u16) { self.c2rust_unnamed.af = value; } 
+    pub fn set_bc(&mut self, value: u16) { self.c2rust_unnamed_0.bc = value; }
+    pub fn set_de(&mut self, value: u16) { self.c2rust_unnamed_1.de = value; }
+    pub fn set_hl(&mut self, value: u16) { self.c2rust_unnamed_2.hl = value; }
+    pub fn set_pc(&mut self, value: u16) { self.pc = value; }
+    pub fn set_sp(&mut self, value: u16) { self.sp = value; }
+    pub fn set_ix(&mut self, value: u16) { self.ix = value; }
+    pub fn set_iy(&mut self, value: u16) { self.iy = value; }
+
+    // Shadow register getters
+    pub fn get_af_shadow(&self) -> u16 { unsafe { self.c2rust_unnamed_3.a_f_ } }
+    pub fn get_bc_shadow(&self) -> u16 { unsafe { self.c2rust_unnamed_4.b_c_ } }
+    pub fn get_de_shadow(&self) -> u16 { unsafe { self.c2rust_unnamed_5.d_e_ } }
+    pub fn get_hl_shadow(&self) -> u16 { unsafe { self.c2rust_unnamed_6.h_l_ } }
+
+    // Shadow register setters
+    pub fn set_af_shadow(&mut self, value: u16) { self.c2rust_unnamed_3.a_f_ = value; } 
+    pub fn set_bc_shadow(&mut self, value: u16) { self.c2rust_unnamed_4.b_c_ = value; } 
+    pub fn set_de_shadow(&mut self, value: u16) { self.c2rust_unnamed_5.d_e_ = value; } 
+    pub fn set_hl_shadow(&mut self, value: u16) { self.c2rust_unnamed_6.h_l_ = value; } 
+
+    // Flag getters (individual flags)
+    pub fn get_flag_carry(&self) -> bool { 
+        unsafe { flag_get(self as *const _ as *mut Z80<T>, cf) }
+    }
+    pub fn get_flag_zero(&self) -> bool { 
+        unsafe { flag_get(self as *const _ as *mut Z80<T>, zf) }
+    }
+    pub fn get_flag_sign(&self) -> bool { 
+        unsafe { flag_get(self as *const _ as *mut Z80<T>, sf) }
+    }
+    pub fn get_flag_parity(&self) -> bool { 
+        unsafe { flag_get(self as *const _ as *mut Z80<T>, pf) }
+    }
+    pub fn get_flag_half_carry(&self) -> bool { 
+        unsafe { flag_get(self as *const _ as *mut Z80<T>, hf) }
+    }
+    pub fn get_flag_subtract(&self) -> bool { 
+        unsafe { flag_get(self as *const _ as *mut Z80<T>, nf) }
+    }
+
+    // Flag setters (individual flags)
+    pub fn set_flag_carry(&mut self, value: bool) { unsafe { flag_set(self, cf, value); } }
+    pub fn set_flag_zero(&mut self, value: bool) { unsafe { flag_set(self, zf, value); } }
+    pub fn set_flag_sign(&mut self, value: bool) { unsafe { flag_set(self, sf, value); } }
+    pub fn set_flag_parity(&mut self, value: bool) { unsafe { flag_set(self, pf, value); } }
+    pub fn set_flag_half_carry(&mut self, value: bool) { unsafe { flag_set(self, hf, value); } }
+    pub fn set_flag_subtract(&mut self, value: bool) { unsafe { flag_set(self, nf, value); } }
+
+    // Other important registers
+    pub fn get_i(&self) -> u8 { self.i }
+    pub fn get_r(&self) -> u8 { self.r }
+    pub fn set_i(&mut self, value: u8) { self.i = value; }
+    pub fn set_r(&mut self, value: u8) { self.r = value; }
+
+    // Interrupt flags
+    pub fn get_iff1(&self) -> bool { self.iff1 }
+    pub fn get_iff2(&self) -> bool { self.iff2 }
+    pub fn set_iff1(&mut self, value: bool) { self.iff1 = value; }
+    pub fn set_iff2(&mut self, value: bool) { self.iff2 = value; }
+
+    // Interrupt mode
+    pub fn get_interrupt_mode(&self) -> u8 { self.interrupt_mode }
+    pub fn set_interrupt_mode(&mut self, mode: u8) { self.interrupt_mode = mode; }
+
+    // Convenience method to get all main registers as a struct
+    pub fn get_registers(&self) -> Z80Registers {
+        Z80Registers {
+            a: self.get_a(),
+            f: self.get_f(),
+            b: self.get_b(),
+            c: self.get_c(),
+            d: self.get_d(),
+            e: self.get_e(),
+            h: self.get_h(),
+            l: self.get_l(),
+            af: self.get_af(),
+            bc: self.get_bc(),
+            de: self.get_de(),
+            hl: self.get_hl(),
+            pc: self.pc,
+            sp: self.sp,
+            ix: self.ix,
+            iy: self.iy,
+            i: self.i,
+            r: self.r,
+            iff1: self.iff1,
+            iff2: self.iff2,
+            interrupt_mode: self.interrupt_mode,
+        }
+    }
+}
+
+// Helper struct for returning all registers at once
+#[derive(Debug, Clone, Copy)]
+pub struct Z80Registers {
+    pub a: u8,
+    pub f: u8,
+    pub b: u8,
+    pub c: u8,
+    pub d: u8,
+    pub e: u8,
+    pub h: u8,
+    pub l: u8,
+    pub af: u16,
+    pub bc: u16,
+    pub de: u16,
+    pub hl: u16,
+    pub pc: u16,
+    pub sp: u16,
+    pub ix: u16,
+    pub iy: u16,
+    pub i: u8,
+    pub r: u8,
+    pub iff1: bool,
+    pub iff2: bool,
+    pub interrupt_mode: u8,
 }
 
 #[derive(Copy, Clone)]
