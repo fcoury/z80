@@ -1,4 +1,4 @@
-use crate::z80::{Z80, Z80_io};
+use crate::z80::{Z80_io, Z80};
 
 struct IO {
     pub mem: [u8; 0x10000],
@@ -23,11 +23,11 @@ fn run_test(cpu: &mut Z80<IO>, rom: &[u8], cyc_expected: u64) {
 
     cpu.init();
     cpu.pc = 0x100;
-    cpu.io.write_byte(0,0xd3);
-    cpu.io.write_byte(1,0);
-    cpu.io.write_byte(5,0xdb);
-    cpu.io.write_byte(6,0);
-    cpu.io.write_byte(7,0xc9);
+    cpu.io.write_byte(0, 0xd3);
+    cpu.io.write_byte(1, 0);
+    cpu.io.write_byte(5, 0xdb);
+    cpu.io.write_byte(6, 0);
+    cpu.io.write_byte(7, 0xc9);
 
     let mut nb_instructions: u64 = 0;
     while !cpu.test_finished {
@@ -37,10 +37,7 @@ fn run_test(cpu: &mut Z80<IO>, rom: &[u8], cyc_expected: u64) {
     let diff = cyc_expected.wrapping_sub(cyc);
     println!(
         "\n*** {} instructions executed on {} cycles (expected={}, diff={})\n\n",
-        nb_instructions,
-        cyc,
-        cyc_expected,
-        diff,
+        nb_instructions, cyc, cyc_expected, diff,
     );
 
     assert_eq!(cyc, cyc_expected);
@@ -48,9 +45,7 @@ fn run_test(cpu: &mut Z80<IO>, rom: &[u8], cyc_expected: u64) {
 
 #[test]
 pub fn main() {
-    let mut memory = IO {
-        mem: [0; 0x10000],
-    };
+    let mut memory = IO { mem: [0; 0x10000] };
 
     let mut cpu = Z80::new(memory);
 
