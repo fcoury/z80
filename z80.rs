@@ -43,6 +43,13 @@ pub trait Z80_io {
         0xff
     }
     fn port_out(&mut self, _addr: u16, _value: u8) {}
+    
+    /// Handle CPU extensions for ED E0-EF opcodes
+    /// Returns Some(cycles) if handled, None if not handled
+    fn handle_extension(&mut self, _ext_num: u8, _z80: &mut Z80<Self>) -> Option<u32> 
+    where Self: Sized {
+        None
+    }
 }
 
 /// Z80 CPU
@@ -3705,6 +3712,12 @@ unsafe fn exec_opcode_ed<T: Z80_io>(z: *mut Z80<T>, mut opcode: uint8_t) -> u32 
                     | flag_val(nf, 0 as i32 != 0) as i32
                     | flag_val(hf, 0 as i32 != 0) as i32) as uint8_t;
             (*z).mem_ptr = ((*z).c2rust_unnamed_2.hl as i32 + 1 as i32) as uint16_t;
+        }
+        224..=239 => {
+            // ED E0-EF: CPU extensions for MSX disk BIOS and other uses
+            if let Some(extra_cycles) = (*z).io.handle_extension(opcode, &mut *z) {
+                cyc = cyc.wrapping_add(extra_cycles);
+            }
         }
         _ => {}
     }
