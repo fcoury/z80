@@ -43,11 +43,12 @@ pub trait Z80_io {
         0xff
     }
     fn port_out(&mut self, _addr: u16, _value: u8) {}
-    
     /// Handle CPU extensions for ED E0-EF opcodes
     /// Returns Some(cycles) if handled, None if not handled
-    fn handle_extension(&mut self, _ext_num: u8, _z80: &mut Z80<Self>) -> Option<u32> 
-    where Self: Sized {
+    fn handle_extension(&mut self, _ext_num: u8, _z80: &mut Z80<Self>) -> Option<u32>
+    where
+        Self: Sized,
+    {
         None
     }
 }
